@@ -223,8 +223,7 @@
         }).join('');
 
         document.getElementById('game-container').innerHTML = `
-            <div class="container" style```html
-="padding-top: 40px;"> <!-- Added padding-top to ensure space at the top -->
+            <div class="container" style="padding-top: 40px; margin-top: 20px;"> <!-- Added padding-top and margin-top to ensure space at the top -->
                 <h2>${currentLanguage === 'en' ? 'Game Over!' : '游戏结束！'}</h2>
                 <p>${currentLanguage === 'en' ? 'You scored' : '你的分数是'} ${score} ${currentLanguage === 'en' ? 'out of 5' : '满分5分'}</p>
                 <h3>${currentLanguage === 'en' ? 'Your Results' : '你的结果'}</h3>
@@ -234,6 +233,7 @@
         `;
     }
 </script>
+
 
 </body>
 </html>
