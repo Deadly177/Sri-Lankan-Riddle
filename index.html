@@ -13,7 +13,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: url('sri.jpg') no-repeat center center fixed;
+            background: url('background.jpg') no-repeat center center fixed;
             background-size: cover;
         }
         .container {
@@ -57,12 +57,26 @@
             display: flex;
             justify-content: center;
         }
+        .instructions {
+            margin: 20px 0;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
 
 <div class="container" id="game-container">
     <h1 id="title">Sri Lankan Riddles Game</h1>
+    <div class="instructions">
+        <h3>How to Play:</h3>
+        <p>1. Select your preferred language (English or 中文).</p>
+        <p>2. Click on "Start Game" to begin.</p>
+        <p>3. A riddle will be displayed along with a timer.</p>
+        <p>4. Type your answer in the input box and click "Submit Answer".</p>
+        <p>5. You will be notified if your answer is correct or incorrect.</p>
+        <p>6. Try to answer all 5 riddles before the time runs out!</p>
+        <p>7. Your score will be displayed at the end.</p>
+    </div>
     <div class="language-switcher">
         <button onclick="selectLanguage('en')">English</button>
         <button onclick="selectLanguage('zh')">中文</button>
@@ -71,12 +85,32 @@
 
 <script>
     const allRiddles = [
-        { question: { en: "I am an ancient rock fortress and palace ruin. I am known as the Lion Rock. What am I?", zh: "我是一个古老的岩石堡垒和宫殿废墟。我被称为狮子岩。我是谁？" }, answer: "Sigiriya" },
-        { question: { en: "I am a famous temple known for housing the Relic of the tooth of the Buddha. What am I?", zh: "我是一座著名的寺庙，以收藏佛牙遗物而闻名。我是谁？" }, answer: "Temple of the Tooth" },
-        { question: { en: "I am the capital city of Sri Lanka. What am I?", zh: "我是斯里兰卡的首都。我是谁？" }, answer: "Colombo" },
-        { question: { en: "I am a city known for my well-preserved colonial architecture. I am also a UNESCO World Heritage site. What am I?", zh: "我是一座以保存完好的殖民建筑而闻名的城市。我还是联合国教科文组织世界遗产地。我是谁？" }, answer: "Galle" },
-        { question: { en: "I am a famous beach town on the southern coast, known for my stilt fishermen. What am I?", zh: "我是南海岸一个著名的海滩小镇，以我的高跷渔夫而闻名。我是谁？" }, answer: "Unawatuna" }
-    ];
+    { question: { en: "I am an ancient rock fortress and palace ruin. I am known as the Lion Rock. What am I?", zh: "我是一个古老的岩石堡垒和宫殿废墟。我被称为狮子岩。我是谁？" }, answer: "Sigiriya" },
+    { question: { en: "I am a famous temple known for housing the Relic of the tooth of the Buddha. What am I?", zh: "我是一座著名的寺庙，以收藏佛牙遗物而闻名。我是谁？" }, answer: "Temple of the Tooth" },
+    { question: { en: "I am the capital city of Sri Lanka. What am I?", zh: "我是斯里兰卡的首都。我是谁？" }, answer: "Colombo" },
+    { question: { en: "I am a city known for my well-preserved colonial architecture. I am also a UNESCO World Heritage site. What am I?", zh: "我是一座以保存完好的殖民建筑而闻名的城市。我还是联合国教科文组织世界遗产地。我是谁？" }, answer: "Galle" },
+    { question: { en: "I am a famous beach town on the southern coast, known for my stilt fishermen. What am I?", zh: "我是南海岸一个著名的海滩小镇，以我的高跷渔夫而闻名。我是谁？" }, answer: "Unawatuna" },
+    { question: { en: "I am a large reservoir known for my scenic beauty and boat rides. What am I?", zh: "我是一个以风景优美和乘船游览而闻名的大水库。我是谁？" }, answer: "Victoria Reservoir" },
+    { question: { en: "I am a historical fort located in the Northern Province of Sri Lanka. What am I?", zh: "我是位于斯里兰卡北部省份的一个历史堡垒。我是谁？" }, answer: "Jaffna Fort" },
+    { question: { en: "I am a sacred mountain located in the Central Highlands of Sri Lanka. What am I?", zh: "我是位于斯里兰卡中部高地的一座神圣山脉。我是谁？" }, answer: "Adam's Peak" },
+    { question: { en: "I am a city famous for my natural harbor and ancient Dutch architecture. What am I?", zh: "我是一个以天然港口和古老荷兰建筑而闻名的城市。我是谁？" }, answer: "Trincomalee" },
+    { question: { en: "I am a wildlife sanctuary known for my elephant population. What am I?", zh: "我是一个以大象数量而闻名的野生动物保护区。我是谁？" }, answer: "Udawalawe National Park" },
+    { question: { en: "I am a beautiful waterfall located in the hill country of Sri Lanka. What am I?", zh: "我是位于斯里兰卡丘陵地区的一个美丽瀑布。我是谁？" }, answer: "Ravana Falls" },
+    { question: { en: "I am an ancient city known for my well-preserved ruins and Buddhist monuments. What am I?", zh: "我是一个以保存完好的废墟和佛教纪念碑而闻名的古城。我是谁？" }, answer: "Anuradhapura" },
+    { question: { en: "I am a coastal town known for my turtle conservation projects. What am I?", zh: "我是一个以海龟保护项目而闻名的沿海小镇。我是谁？" }, answer: "Hikkaduwa" },
+    { question: { en: "I am a cultural city famous for my annual Perahera festival. What am I?", zh: "我是一个以一年一度的佩拉赫拉节而闻名的文化城市。我是谁？" }, answer: "Kandy" },
+    { question: { en: "I am a picturesque village known for my tea plantations. What am I?", zh: "我是一个以茶园闻名的风景如画的村庄。我是谁？" }, answer: "Nuwara Eliya" },
+    { question: { en: "I am a national park known for my diverse wildlife, including leopards. What am I?", zh: "我是一个以多样野生动物（包括豹子）而闻名的国家公园。我是谁？" }, answer: "Yala National Park" },
+    { question: { en: "I am an ancient irrigation system known for my complex network of canals. What am I?", zh: "我是一个以复杂的运河网络闻名的古代灌溉系统。我是谁？" }, answer: "Anuradhapura Kingdom" },
+    { question: { en: "I am a coastal town famous for my golden sandy beaches. What am I?", zh: "我是一个以金色沙滩闻名的沿海小镇。我是谁？" }, answer: "Mirissa" },
+    { question: { en: "I am a colonial-era fortress located in the Southern Province of Sri Lanka. What am I?", zh: "我是位于斯里兰卡南部省份的殖民时代的堡垒。我是谁？" }, answer: "Matara Fort" },
+    { question: { en: "I am a hill station known for my cool climate and strawberry plantations. What am I?", zh: "我是一个以凉爽气候和草莓种植园闻名的山地车站。我是谁？" }, answer: "Haputale" },
+    { question: { en: "I am a wildlife reserve known for my elephant orphanage. What am I?", zh: "我是一个以大象孤儿院闻名的野生动物保护区。我是谁？" }, answer: "Pinnawala Elephant Orphanage" },
+    { question: { en: "I am a historical site known for my rock carvings and ancient inscriptions. What am I?", zh: "我是一个以岩雕和古代铭文闻名的历史遗址。我是谁？" }, answer: "Buduruwagala" },
+    { question: { en: "I am a coastal town famous for my whale watching tours. What am I?", zh: "我是一个以观鲸游览而闻名的沿海小镇。我是谁？" }, answer: "Mirissa" },
+    { question: { en: "I am a religious site known for my giant Buddha statue. What am I?", zh: "我是一个以巨型佛像闻名的宗教圣地。我是谁？" }, answer: "Dambulla Cave Temple" },
+    { question: { en: "I am a mountain range known for my breathtaking views and hiking trails. What am I?", zh: "我是一个以令人叹为观止的美景和徒步旅行道而闻名的山脉。我是谁？" }, answer: "Knuckles Mountain Range" }
+];
 
     let currentRiddleIndex = 0;
     let score = 0;
