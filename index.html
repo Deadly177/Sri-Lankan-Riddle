@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Lankan Riddles Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('Sri.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .riddle {
+            margin-bottom: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            width: 45%;
+            box-sizing: border-box;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .language-switcher {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="game-container">
+    <h1 id="title">Sri Lankan Riddles Game</h1>
+    <div class="language-switcher">
+        <button onclick="selectLanguage('en')">English</button>
+        <button onclick="selectLanguage('zh')">中文</button>
+    </div>
+</div>
+
+<script>
+    const allRiddles = [
+        { question: { en: "I am an ancient rock fortress and palace ruin. I am known as the Lion Rock. What am I?", zh: "我是一个古老的岩石堡垒和宫殿废墟。我被称为狮子岩。我是谁？" }, answer: "Sigiriya" },
+        { question: { en: "I am a famous temple known for housing the Relic of the tooth of the Buddha. What am I?", zh: "我是一座著名的寺庙，以收藏佛牙遗物而闻名。我是谁？" }, answer: "Temple of the Tooth" },
+        { question: { en: "I am the capital city of Sri Lanka. What am I?", zh: "我是斯里兰卡的首都。我是谁？" }, answer: "Colombo" },
+        { question: { en: "I am a city known for my well-preserved colonial architecture. I am also a UNESCO World Heritage site. What am I?", zh: "我是一座以保存完好的殖民建筑而闻名的城市。我还是联合国教科文组织世界遗产地。我是谁？" }, answer: "Galle" },
+        { question: { en: "I am a famous beach town on the southern coast, known for my stilt fishermen. What am I?", zh: "我是南海岸一个著名的海滩小镇，以我的高跷渔夫而闻名。我是谁？" }, answer: "Unawatuna" }
+    ];
+
+    let currentRiddleIndex = 0;
+    let score = 0;
+    let timer;
+    let secondsRemaining = 90;
+    let selectedQuestions = [];
+    let currentLanguage = 'en';
+
+    function selectLanguage(language) {
+        currentLanguage = language;
+        document.getElementById('game-container').innerHTML = `
+            <div class="container">
+                <h1 id="title">${currentLanguage === 'en' ? 'Sri Lankan Riddles Game' : '斯里兰卡谜语游戏'}</h1>
+                <div class="timer" id="timer">${secondsRemaining}</div>
+                <button onclick="startGame()">${currentLanguage === 'en' ? 'Start Game' : '开始游戏'}</button>
+            </div>
+        `;
+    }
+
+    function getRandomQuestions() {
+        selectedQuestions = [];
+        while (selectedQuestions.length < 5) {
+            const randomIndex = Math.floor(Math.random() * allRiddles.length);
+            if (!selectedQuestions.includes(randomIndex)) {
+                selectedQuestions.push(randomIndex);
+            }
+        }
+    }
+
+    function displayRiddle() {
+        document.getElementById('game-container').innerHTML = `
+            <div class="container">
+                <h1 id="title">${currentLanguage === 'en' ? 'Sri Lankan Riddles Game' : '斯里兰卡谜语游戏'}</h1>
+                <div class="timer" id="timer">${secondsRemaining}</div>
+                <div class="riddle">
+                    <p>Riddle ${currentRiddleIndex + 1}: ${allRiddles[selectedQuestions[currentRiddleIndex]].question[currentLanguage]}</p>
+                    <input type="text" id="userAnswer" placeholder="${currentLanguage === 'en' ? 'Your answer' : '你的答案'}" style="width: 100%; padding: 10px; box-sizing: border-box;">
+                    <button onclick="checkAnswer()">${currentLanguage === 'en' ? 'Submit Answer' : '提交答案'}</button>
+                </div>
+                <div id="result" class="result"></div>
+            </div>
+        `;
+        startTimer();
+    }
+
+    function startGame() {
+        getRandomQuestions();
+        currentRiddleIndex = 0;
+        score = 0;
+        secondsRemaining = 90;
+        displayRiddle();
+    }
+
+    function checkAnswer() {
+        const userAnswer = document.getElementById('userAnswer').value.trim().toLowerCase();
+        const result = document.getElementById('result');
+        const correctAnswer = allRiddles[selectedQuestions[currentRiddleIndex]].answer.toLowerCase();
+
+        if (userAnswer === correctAnswer) {
+            score++;
+            result.textContent = currentLanguage === 'en' ? 'Correct!' : '正确！';
+        } else {
+            result.textContent = `${currentLanguage === 'en' ? 'Incorrect! The correct answer is:' : '错误！正确答案是：'} ${correctAnswer}`;
+        }
+
+        if (currentRiddleIndex < 4) {
+            currentRiddleIndex++;
+            secondsRemaining = 90;
+            displayRiddle();
+        } else {
+            setTimeout(displayScore, 2000);
+        }
+    }
+
+    function startTimer() {
+        clearInterval(timer); // Clear any existing timer
+        timer = setInterval(() => {
+            secondsRemaining--;
+            if (secondsRemaining <= 0) {
+                clearInterval(timer);
+                displayScore();
+            } else {
+                document.getElementById('timer').textContent = secondsRemaining;
+            }
+        }, 1000);
+    }
+
+    function displayScore() {
+        document.getElementById('game-container').innerHTML = `
+            <div class="container">
+                <h2>${currentLanguage === 'en' ? 'Game Over!' : '游戏结束！'}</h2>
+                <p>${currentLanguage === 'en' ? 'You scored' : '你的分数是'} ${score} ${currentLanguage === 'en' ? 'out of 5' : '满分5分'}</p>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
