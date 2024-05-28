@@ -76,7 +76,7 @@
         <p>5. You will be notified if your answer is correct or incorrect.</p>
         <p>6. Try to answer all 5 riddles before the time runs out!</p>
         <p>7. Your score will be displayed at the end.</p>
-        <p> Hint -: "Test your knowledge about Sri Lankan landmarks, culture, and heritage with this exciting riddle game!"</p>
+        <p>Hint -: "Test your knowledge about Sri Lankan landmarks, culture, and heritage with this exciting riddle game!"</p>
     </div>
     <div class="language-switcher">
         <button onclick="selectLanguage('en')">English</button>
@@ -113,12 +113,14 @@
     { question: { en: "I am a mountain range known for my breathtaking views and hiking trails. What am I?", zh: "我是一个以令人叹为观止的美景和徒步旅行道而闻名的山脉。我是谁？" }, answer: "Knuckles Mountain Range" }
 ];
 
+
     let currentRiddleIndex = 0;
     let score = 0;
     let timer;
     let secondsRemaining = 90;
     let selectedQuestions = [];
     let currentLanguage = 'en';
+    let userAnswers = [];
 
     function selectLanguage(language) {
         currentLanguage = language;
@@ -162,25 +164,31 @@
         currentRiddleIndex = 0;
         score = 0;
         secondsRemaining = 90;
+        userAnswers = [];
         displayRiddle();
     }
 
     function checkAnswer() {
-        const userAnswer = document.getElementById('userAnswer').value.trim().toLowerCase();
-        const result = document.getElementById('result');
-        const correctAnswer = allRiddles[selectedQuestions[currentRiddleIndex]].answer.toLowerCase();
+        const userAnswer = document.getElementById('userAnswer').value.trim();
+        const correctAnswer = allRiddles[selectedQuestions[currentRiddleIndex]].answer;
 
-        if (userAnswer === correctAnswer) {
+        userAnswers.push({
+            question: allRiddles[selectedQuestions[currentRiddleIndex]].question[currentLanguage],
+            userAnswer: userAnswer,
+            correctAnswer: correctAnswer
+        });
+
+        if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
             score++;
-            result.textContent = currentLanguage === 'en' ? 'Correct!' : '正确！';
+            document.getElementById('result').textContent = currentLanguage === 'en' ? 'Correct!' : '正确！';
         } else {
-            result.textContent = `${currentLanguage === 'en' ? 'Incorrect! The correct answer is:' : '错误！正确答案是：'} ${correctAnswer}`;
+            document.getElementById('result').textContent = `${currentLanguage === 'en' ? 'Incorrect! The correct answer is:' : '错误！正确答案是：'} ${correctAnswer}`;
         }
 
         if (currentRiddleIndex < 4) {
             currentRiddleIndex++;
             secondsRemaining = 90;
-            displayRiddle();
+            setTimeout(displayRiddle, 2000);
         } else {
             setTimeout(displayScore, 2000);
         }
@@ -200,10 +208,21 @@
     }
 
     function displayScore() {
+        let resultsHtml = userAnswers.map((entry, index) => {
+            return `
+                <p>Riddle ${index + 1}: ${entry.question}</p>
+                <p>Your Answer: ${entry.userAnswer}</p>
+                <p>Correct Answer: ${entry.correctAnswer}</p>
+                <hr/>
+            `;
+        }).join('');
+
         document.getElementById('game-container').innerHTML = `
             <div class="container">
                 <h2>${currentLanguage === 'en' ? 'Game Over!' : '游戏结束！'}</h2>
                 <p>${currentLanguage === 'en' ? 'You scored' : '你的分数是'} ${score} ${currentLanguage === 'en' ? 'out of 5' : '满分5分'}</p>
+                <div>${resultsHtml}</div>
+                <p>${currentLanguage === 'en' ? 'Show the results to a stall representative to decide the winner.' : '将结果展示给摊位代表以决定获胜者。'}</p>
             </div>
         `;
     }
