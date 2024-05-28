@@ -20,10 +20,13 @@
             width: 90%;
             max-width: 400px;
             padding: 20px;
+            padding-top: 40px; /* Add padding at the top */
             background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white background */
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            overflow-y: auto;
+            max-height: 80vh; /* Make sure the container does not exceed the viewport height */
         }
         .riddle {
             margin-bottom: 20px;
@@ -113,7 +116,6 @@
     { question: { en: "I am a mountain range known for my breathtaking views and hiking trails. What am I?", zh: "我是一个以令人叹为观止的美景和徒步旅行道而闻名的山脉。我是谁？" }, answer: "Knuckles Mountain Range" }
 ];
 
-
     let currentRiddleIndex = 0;
     let score = 0;
     let timer;
@@ -133,14 +135,17 @@
         `;
     }
 
-    function getRandomQuestions() {
-        selectedQuestions = [];
-        while (selectedQuestions.length < 5) {
-            const randomIndex = Math.floor(Math.random() * allRiddles.length);
-            if (!selectedQuestions.includes(randomIndex)) {
-                selectedQuestions.push(randomIndex);
-            }
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
+    }
+
+    function getRandomQuestions() {
+        selectedQuestions = [...allRiddles];
+        shuffleArray(selectedQuestions);
+        selectedQuestions = selectedQuestions.slice(0, 5);
     }
 
     function displayRiddle() {
@@ -149,7 +154,7 @@
                 <h1 id="title">${currentLanguage === 'en' ? 'Sri Lankan Riddles Game' : '斯里兰卡谜语游戏'}</h1>
                 <div class="timer" id="timer">${secondsRemaining}</div>
                 <div class="riddle">
-                    <p>Riddle ${currentRiddleIndex + 1}: ${allRiddles[selectedQuestions[currentRiddleIndex]].question[currentLanguage]}</p>
+                    <p>Riddle ${currentRiddleIndex + 1}: ${selectedQuestions[currentRiddleIndex].question[currentLanguage]}</p>
                     <input type="text" id="userAnswer" placeholder="${currentLanguage === 'en' ? 'Your answer' : '你的答案'}" style="width: 100%; padding: 10px; box-sizing: border-box;">
                     <button onclick="checkAnswer()">${currentLanguage === 'en' ? 'Submit Answer' : '提交答案'}</button>
                 </div>
@@ -170,10 +175,10 @@
 
     function checkAnswer() {
         const userAnswer = document.getElementById('userAnswer').value.trim();
-        const correctAnswer = allRiddles[selectedQuestions[currentRiddleIndex]].answer;
+        const correctAnswer = selectedQuestions[currentRiddleIndex].answer;
 
         userAnswers.push({
-            question: allRiddles[selectedQuestions[currentRiddleIndex]].question[currentLanguage],
+            question: selectedQuestions[currentRiddleIndex].question[currentLanguage],
             userAnswer: userAnswer,
             correctAnswer: correctAnswer
         });
@@ -218,9 +223,11 @@
         }).join('');
 
         document.getElementById('game-container').innerHTML = `
-            <div class="container">
+            <div class="container" style```html
+="padding-top: 40px;"> <!-- Added padding-top to ensure space at the top -->
                 <h2>${currentLanguage === 'en' ? 'Game Over!' : '游戏结束！'}</h2>
                 <p>${currentLanguage === 'en' ? 'You scored' : '你的分数是'} ${score} ${currentLanguage === 'en' ? 'out of 5' : '满分5分'}</p>
+                <h3>${currentLanguage === 'en' ? 'Your Results' : '你的结果'}</h3>
                 <div>${resultsHtml}</div>
                 <p>${currentLanguage === 'en' ? 'Show the results to a stall representative to decide the winner.' : '将结果展示给摊位代表以决定获胜者。'}</p>
             </div>
